@@ -1,7 +1,7 @@
 # generate an address in a two formats (P2SH and WIT)
 from resources.bch.network import bch_network
 
-class GenerateBtcKey:
+class GenerateBchKey:
     def __init__(self):
         self.network = bch_network()
     

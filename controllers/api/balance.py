@@ -2,8 +2,11 @@ from flask_restful import Resource, abort
 from flask import request, jsonify
 from services.dbconfig import Database
 from resources.btc.prkey import decrypt
-from resources.btc.balance import btc_balance
 from services.api_calls import use_api_key
+# btc
+from resources.btc.balance import btc_balance
+# bch
+from resources.bch.balance import bch_balance
 
 # init db
 client = Database()
@@ -31,5 +34,21 @@ class GetBalance(Resource):
             balance = 0
             for prkey in prkeys:
                 balance = balance + float(btc_balance(currency, prkey))
+        # Bitcoin cash
+        elif coin == 'bch':
+            # get and decrypt prkeys
+            user = db.user.find_one({'api_keys.key': api_key}, {'username': True})
+            wallet = db.wallet.find_one({'username': user['username']}, {'bch_wallet.prkey': True})
+            enc_prkeys = []
+            for prkey in wallet['bch_wallet']:
+                enc_prkeys.append(prkey['prkey'])
+
+            prkeys = []
+            for prkey in enc_prkeys:
+                prkeys.append(decrypt(str.encode(prkey)))
+            
+            balance = 0
+            for prkey in prkeys:
+                balance = balance + float(bch_balance(currency, prkey))
 
         return jsonify(network=coin.upper(), balance=balance, balance_currency=currency)
