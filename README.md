@@ -27,7 +27,7 @@ MAIL_SERVER='<email smtp server>'
 MAIL_PORT='<email smtp server port>'
 MAIL_USERNAME='<email address for account activation>'
 MAIL_PASSWORD='<password for accessing email account>'
-ENCRYPTION_SECRET='<random string used for jwt salting>'
+ENCRYPTION_SECRET='<random string used for prkey encryption>'
 ```
 After saving the file, start the server with one of the following commands:
 ```bash
@@ -45,37 +45,73 @@ python main.py --dev
 gunicorn main:app
 ```
 
-Guide
-------------
-### Before accessing the API, the client needs to create an account. Go to `/` on your web browser and click on register then login and generate an API key.
+## Guide
 
-# 
+### Before accessing the API, you need to create an account and generate an API key:
 
+### Account creation:
+* Register:
+```bash
+curl -X POST /api/auth/register {
+    "username":"<USERNAME>",
+    "email":"<EMAIL>",
+    "password":"<PASSWORD>"
+}
+```
+
+* Activate account:
+```bash
+curl -X PUT /api/auth/activate {
+    "activation_code":"<ACTIVATION_CODE>"
+}
+```
+
+* Login to account:
+```bash
+# This will generate a JWT Token
+curl -X GET /api/auth/login {
+    "email":"<EMAIL>",
+    "password":"<PASSWORD>"
+}
+```
+
+* API key generation:
+```bash
+curl -X GET /api/generate_key
+-H 'Authorization: jwt <JWT_TOKEN>'
+```
+
+* Get all API keys:
+```bash
+curl -X GET /api/keys
+-H 'Authorization: jwt <JWT_TOKEN>'
+```
+#
 ### Generate a new address:
 ```bash
 # BTC
-GET /api/btc/generate?api_key=<API_KEY>
+curl -X GET /api/btc/generate?api_key=<API_KEY>
 
 # BCH
-GET /api/bch/generate?api_key=<API_KEY>
+curl -X GET /api/bch/generate?api_key=<API_KEY>
 ```
 
 ### Get all addresses:
 ```bash
 # BTC
-GET /api/btc/addresses?api_key=<API_KEY>
+curl -X GET /api/btc/addresses?api_key=<API_KEY>
 
 # BCH
-GET /api/bch/addresses?api_key=<API_KEY>
+curl -X GET /api/bch/addresses?api_key=<API_KEY>
 ```
 
 ### Get wallet balance:
 ```bash
 # BTC
-GET /api/btc/balance?api_key=<API_KEY>&currency=<CURRENCY>
+curl -X GET /api/btc/balance?api_key=<API_KEY>&currency=<CURRENCY>
 
 # BCH
-GET /api/bch/balance?api_key=<API_KEY>&currency=<CURRENCY>
+curl -X GET /api/bch/balance?api_key=<API_KEY>&currency=<CURRENCY>
 
 # available currencies: btc, bch, usd, eur, gbp, jpy and other major currencies like cad and chf
 ```
@@ -83,19 +119,19 @@ GET /api/bch/balance?api_key=<API_KEY>&currency=<CURRENCY>
 ### Get transaction history:
 ```bash
 # BTC
-GET /api/btc/history?api_key=<API_KEY>
+curl -X GET /api/btc/history?api_key=<API_KEY>
 
 # BCH
-GET /api/bch/history?api_key=<API_KEY>
+curl -X GET /api/bch/history?api_key=<API_KEY>
 ```
 
 ### Get current rates:
 ```bash
 # BTC
-GET /api/btc/rates?api_key=<API_KEY>&currency=<CURRENCY>
+curl -X GET /api/btc/rates?api_key=<API_KEY>&currency=<CURRENCY>
 
 # BCH
-GET /api/bch/rates?api_key=<API_KEY>&currency=<CURRENCY>
+curl -X GET /api/bch/rates?api_key=<API_KEY>&currency=<CURRENCY>
 
 # available currencies: btc, bch, usd, eur, gbp, jpy and other major currencies like cad and chf
 ```
@@ -103,10 +139,10 @@ GET /api/bch/rates?api_key=<API_KEY>&currency=<CURRENCY>
 ### Get a fiat amount in crypto:
 ```bash
 # BTC
-GET /api/btc/rates?api_key=<API_KEY>&currency=<CURRENCY>&amount=<AMOUNT>
+curl -X GET /api/btc/rates?api_key=<API_KEY>&currency=<CURRENCY>&amount=<AMOUNT>
 
 # BCH
-GET /api/bch/rates?api_key=<API_KEY>&currency=<CURRENCY>&amount=<AMOUNT>
+curl -X GET /api/bch/rates?api_key=<API_KEY>&currency=<CURRENCY>&amount=<AMOUNT>
 
 # available currencies: btc, bch, usd, eur, gbp, jpy and other major currencies like cad and chf
 ```
@@ -114,23 +150,27 @@ GET /api/bch/rates?api_key=<API_KEY>&currency=<CURRENCY>&amount=<AMOUNT>
 ### Check if an address is valid:
 ```bash
 # BTC
-GET /api/btc/validate?api_key=<API_KEY>&address=<ADDRESS>
+curl -X GET /api/btc/validate?api_key=<API_KEY>&address=<ADDRESS>
 
 # BCH
-GET /api/bch/validate?api_key=<API_KEY>&address=<ADDRESS>
+curl -X GET /api/bch/validate?api_key=<API_KEY>&address=<ADDRESS>
 ```
 
 ### Perform a transaction:
 ```bash
 # BTC
-POST /api/btc/tx?api_key=<API_KEY> {
+curl -X POST /api/btc/tx?api_key=<API_KEY>
+-H 'Content-Type: application/json'
+-d {
     "recipient":"<ADDRESS>",
     "amount": <AMOUNT>,
     "currency": "<CURRENCY>"
 }
 
 # BCH
-POST /api/bch/tx?api_key=<API_KEY> {
+curl -X POST /api/bch/tx?api_key=<API_KEY>
+-H 'Content-Type: application/json'
+-d {
     "recipient":"<ADDRESS>",
     "amount": <AMOUNT>,
     "currency": "<CURRENCY>"
