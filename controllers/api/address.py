@@ -40,7 +40,8 @@ class GenerateAddr(Resource):
                     wit_address = btc_wit_addr,
                     prkey = btc_prkey
                     )
-            wallet = Wallet.objects.get(username="merwane")
+            user = db.user.find_one({'api_keys.key': api_key}, {'username': True})
+            wallet = Wallet.objects.get(username=user['username'])
             wallet.btc_wallet.append(btc_wallet)
             wallet.save()
             # reponse
@@ -61,7 +62,8 @@ class GenerateAddr(Resource):
                     address = bch_std_addr,
                     prkey = bch_prkey
                     )
-            wallet = Wallet.objects.get(username="merwane")
+            user = db.user.find_one({'api_keys.key': api_key}, {'username': True})
+            wallet = Wallet.objects.get(username=user['username'])
             wallet.bch_wallet.append(bch_wallet)
             wallet.save()
             # reponse
