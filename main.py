@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restful import Api
+import sys
 
 # user methods
 from controllers.user.account import Register, Login, Activate
@@ -35,4 +36,8 @@ api.add_resource(ValidAddr, '/api/<string:coin>/validate')
 api.add_resource(Transaction, '/api/<string:coin>/tx')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    if len(sys.argv) == 2:
+        DEBUG = True
+    else:
+        DEBUG = False
+    app.run(debug=DEBUG)
