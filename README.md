@@ -7,9 +7,12 @@ You will need mongodb to store wallets, user accounts and api keys. Of course, p
 
 I created **Bitez** because I wanted a free alternative to [Block.io](https://block.io/).
 
+<span style="color: red;"><strong>Important:</strong></span>
+**Bitez** is still in alpha and therefore shouldn't be used for serving a large application with a large user base. Serving it for a small application is probably fine. I'm 20 and I'm broke so I don't want to be involved in any lawsuit haha
+
 Installation
 ------------
-First, you'll need to install all the dependencies:
+After cloning this repository, you'll need to install all the dependencies:
 ```bash
 # using pip
 pip install requirements.txt
@@ -201,3 +204,5 @@ Promoting the project is also considered a huge contribution! Any action is welc
 Notes and credits
 ------------
 * I really wanted to thank [Ofek Lev](https://github.com/ofek) for his library [bit](https://github.com/ofek/bit) and [Sporestack](https://github.com/sporestack) with his fork [bitcash](https://github.com/sporestack/bitcash) which made **Bitez** possible without me having a headache!
+
+* The rates and transaction API for BCH doesn't work on the testnet (dev server) because of a dependency issue. It should be fixed soon.
